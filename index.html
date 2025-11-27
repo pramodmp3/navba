@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stackly Animated Navbar</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Base Reset and Variables */
+      :root {
+        --primary-bg: #1a1a2e; /* Deep Indigo/Navy */
+        --secondary-bg: #0f0f1b;
+        --accent-color: #00ffff; /* Electric Cyan */
+        --text-color: #eaeaea;
+        --font-family: "Inter", sans-serif;
+        --transition-speed: 0.3s;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: var(--font-family);
+        background-color: var(--secondary-bg);
+        color: var(--text-color);
+        min-height: 200vh; /* For testing fixed/sticky behavior */
+      }
+
+      a {
+        text-decoration: none;
+        color: var(--text-color);
+      }
+
+      ul {
+        list-style: none;
+      }
+
+      /* ----------------------------------
+        1. NAVBAR STRUCTURE (DESKTOP)
+        ---------------------------------- */
+
+      .navbar {
+        background-color: var(--primary-bg);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        padding: 1rem 3%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        border-bottom: 2px solid var(--accent-color);
+      }
+
+      .logo-link {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 0;
+        transition: transform var(--transition-speed),
+          filter var(--transition-speed);
+      }
+
+      .logo-link:hover {
+        transform: scale(1.05) rotate(1deg);
+        filter: drop-shadow(0 0 5px var(--accent-color));
+      }
+
+      .logo {
+        height: 40px;
+        width: auto;
+        border-radius: 8px;
+      }
+
+      .desktop-nav {
+        display: flex;
+        align-items: center;
+      }
+
+      .nav-menu {
+        display: flex;
+        gap: 2.5rem;
+        margin-right: 2.5rem;
+      }
+
+      .nav-item {
+        position: relative;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        padding: 0.5rem 0;
+      }
+
+      /* Nav Link Hover Animation (Animated Underline) */
+      .nav-link {
+        position: relative;
+        padding: 5px 0;
+        transition: color var(--transition-speed);
+        display: block;
+      }
+
+      .nav-link::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--accent-color), #33ffff);
+        transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.4s;
+        transform-origin: left;
+      }
+
+      .nav-link:hover {
+        color: var(--accent-color);
+      }
+
+      .nav-link:hover::before {
+        width: 100%;
+        transform: scaleX(1);
+      }
+
+      /* ----------------------------------
+        2. DROPDOWN STYLING & ANIMATION
+        ---------------------------------- */
+      .dropdown {
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        min-width: 180px;
+        background-color: var(--secondary-bg);
+        border: 1px solid var(--accent-color);
+        border-radius: 8px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+        padding: 10px 0;
+
+        /* Slide + Fade Animation Setup */
+        opacity: 0;
+        visibility: hidden;
+        transform: translate(-50%, 10px); /* Initial slide-down offset */
+        transition: opacity 0.3s ease-out, transform 0.3s ease-out,
+          visibility 0s 0.3s;
+        pointer-events: none;
+        z-index: 10;
+      }
+
+      .nav-item.dropdown-open .dropdown {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, 0); /* Slide up to final position */
+        transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        pointer-events: auto;
+      }
+
+      .dropdown a {
+        padding: 8px 20px;
+        display: block;
+        white-space: nowrap;
+        transition: background-color var(--transition-speed),
+          color var(--transition-speed);
+      }
+
+      .dropdown a:hover {
+        background-color: rgba(0, 255, 255, 0.1);
+        color: var(--accent-color);
+      }
+
+      .dropdown-toggle-icon {
+        margin-left: 8px;
+        transition: transform var(--transition-speed) ease-in-out;
+        display: inline-block;
+      }
+
+      .nav-item.dropdown-open .dropdown-toggle-icon {
+        transform: rotate(180deg);
+      }
+
+      /* ----------------------------------
+        3. CONTACT BUTTON (UNIQUE SHAPE)
+        ---------------------------------- */
+
+      .contact-btn {
+        position: relative;
+        background: linear-gradient(135deg, var(--accent-color), #00a3a3);
+        color: var(--primary-bg);
+        font-weight: 700;
+        padding: 12px 25px;
+        border: none;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        overflow: hidden;
+
+        /* Unique Shape: Clip Path for two diagonal sides curved (approximated by complex path)
+               and two sides sharp */
+        clip-path: polygon(
+          10% 0%,
+          /* Top Left Cut */ 100% 0%,
+          /* Top Right Sharp */ 90% 100%,
+          /* Bottom Right Cut */ 0% 100% /* Bottom Left Sharp */
+        );
+
+        transition: transform 0.4s ease-out, box-shadow 0.4s ease-out;
+        font-size: 0.9rem;
+      }
+
+      /* 360 Rotation on Hover */
+      .contact-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 15px var(--accent-color),
+          0 0 25px rgba(0, 255, 255, 0.5);
+        animation: rotateGlow 1.5s infinite linear;
+      }
+
+      @keyframes rotateGlow {
+        0% {
+          transform: scale(1.1) rotate(0deg);
+        }
+        100% {
+          transform: scale(1.1) rotate(360deg);
+        }
+      }
+
+      /* ----------------------------------
+        4. MOBILE MENU STYLING
+        ---------------------------------- */
+
+      .hamburger-menu {
+        display: none; /* Hidden on desktop */
+        width: 30px;
+        height: 24px;
+        position: relative;
+        cursor: pointer;
+        padding: 2px;
+        z-index: 1100;
+      }
+
+      .bar {
+        width: 100%;
+        height: 3px;
+        background-color: var(--accent-color);
+        position: absolute;
+        left: 0;
+        transition: all 0.4s cubic-bezier(0.8, 0, 0.1, 1); /* Advanced timing for morph/bounce */
+        border-radius: 2px;
+      }
+
+      .bar-top {
+        top: 0;
+      }
+      .bar-mid {
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      .bar-bottom {
+        bottom: 0;
+      }
+
+      /* Hamburger Morph Animation (X with Rotation) */
+      .hamburger-menu.is-active .bar-top {
+        transform: translateY(10.5px) rotate(45deg);
+      }
+      .hamburger-menu.is-active .bar-mid {
+        opacity: 0;
+        transform: translateX(-30px);
+      }
+      .hamburger-menu.is-active .bar-bottom {
+        transform: translateY(-10.5px) rotate(-45deg);
+      }
+
+      /* Mobile Menu Container */
+      .mobile-nav-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--primary-bg);
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding-top: 60px; /* Space for the fixed navbar above */
+
+        /* Initial state for slide-in */
+        transform: translateX(100%);
+        opacity: 0;
+        transition: transform 0.5s ease-out, opacity 0.4s ease-out;
+        z-index: 900;
+        overflow-y: auto;
+      }
+
+      .mobile-nav-container.is-active {
+        display: flex;
+        transform: translateX(0);
+        opacity: 1;
+      }
+
+      .mobile-menu {
+        width: 80%;
+        text-align: center;
+      }
+
+      /* New structure for mobile dropdown item */
+      .mobile-nav-item {
+        margin-bottom: 1.5rem;
+        /* Reset padding from old structure */
+        padding: 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .mobile-item-header {
+        display: flex;
+        justify-content: center; /* Center the content */
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .mobile-nav-link {
+        font-size: 1.5rem;
+        font-weight: 700;
+        padding: 5px 10px;
+        transition: color var(--transition-speed);
+      }
+
+      .mobile-nav-link:hover {
+        color: var(--accent-color);
+        transform: scale(1.05);
+        transition: color var(--transition-speed),
+          transform var(--transition-speed);
+      }
+
+      .mobile-dropdown-arrow {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        margin-left: 5px;
+        display: flex; /* To center the icon */
+        align-items: center;
+        justify-content: center;
+        transition: transform var(--transition-speed);
+        color: var(
+          --text-color
+        ); /* To ensure button state reflects parent text color */
+      }
+
+      .mobile-dropdown-arrow:hover {
+        color: var(--accent-color);
+      }
+
+      .mobile-dropdown-arrow:focus {
+        outline: 2px solid var(--accent-color);
+        outline-offset: 2px;
+      }
+
+      /* Mobile Dropdown */
+      .mobile-dropdown {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out;
+        padding: 0 20px;
+        background-color: var(--secondary-bg);
+        border-radius: 6px;
+        margin-top: 10px;
+      }
+
+      .mobile-dropdown.is-open {
+        max-height: 200px; /* Sufficient height for content */
+        padding: 10px 20px;
+      }
+
+      .mobile-dropdown a {
+        display: block;
+        padding: 10px 0;
+        font-size: 1.2rem;
+        color: var(--text-color);
+      }
+      .mobile-dropdown a:hover {
+        color: var(--accent-color);
+        background-color: transparent;
+      }
+
+      /* General Arrow Icon (for mobile and desktop) */
+      .arrow-icon {
+        display: inline-block;
+        width: 0;
+        height: 0;
+        margin-left: 8px;
+        /* BOLDER AND BIGGER ARROW */
+        border-left: 7px solid transparent;
+        border-right: 7px solid transparent;
+        border-top: 7px solid var(--text-color);
+        transition: transform var(--transition-speed) ease-in-out;
+      }
+
+      /* Mobile Arrow Rotation & Color Change */
+      .mobile-nav-item.is-open .mobile-dropdown-arrow .arrow-icon {
+        transform: rotate(180deg);
+        border-top-color: var(--accent-color);
+      }
+
+      /* Ensures the arrow in the button changes color on hover */
+      .mobile-dropdown-arrow:hover .arrow-icon {
+        border-top-color: var(--accent-color);
+      }
+
+      /* ----------------------------------
+        5. MEDIA QUERIES (RESPONSIVENESS)
+        ---------------------------------- */
+
+      @media (max-width: 1024px) {
+        .navbar {
+          padding: 1rem 5%;
+        }
+        .nav-menu {
+          gap: 1.5rem;
+        }
+        .contact-btn {
+          padding: 10px 20px;
+          font-size: 0.8rem;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .desktop-nav {
+          display: none;
+        }
+
+        .hamburger-menu {
+          display: block;
+        }
+
+        .navbar {
+          border-bottom: none; /* Clean up border for mobile */
+        }
+
+        .logo-link {
+          margin: 0 auto; /* Center logo in mobile navbar */
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar" role="navigation" aria-label="Main Navigation">
+      <!-- Logo -->
+      <a href="#" class="logo-link" aria-label="Stackly Home">
+        <!-- Placeholder for user-provided image -->
+        <img
+          src="https://placehold.co/150x40/00FFFF/1A1A2E?text=Stackly"
+          alt="Stackly Company Logo"
+          class="logo"
+        />
+      </a>
+
+      <!-- Desktop Navigation -->
+      <div class="desktop-nav">
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <!-- Dropdown Parent -->
+            <a
+              href="#"
+              class="nav-link dropdown-trigger"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              HOME
+              <span class="dropdown-toggle-icon">&#9660;</span>
+            </a>
+            <ul class="dropdown" role="menu">
+              <li><a href="#" role="menuitem">HOME 1 (Subpage)</a></li>
+              <li><a href="#" role="menuitem">HOME 2 (Alt Layout)</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a href="#" class="nav-link">PRODUCTS</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">ABOUT</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">FAQ</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">CAREERS</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">BLOG</a></li>
+        </ul>
+
+        <!-- Unique Contact Button -->
+        <a href="#">
+          <button class="contact-btn" aria-label="Contact Stackly for services">
+            CONTACT
+          </button>
+        </a>
+      </div>
+
+      <!-- Mobile Hamburger Menu -->
+      <button
+        class="hamburger-menu"
+        aria-label="Toggle navigation menu"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+      >
+        <span class="bar bar-top"></span>
+        <span class="bar bar-mid"></span>
+        <span class="bar bar-bottom"></span>
+      </button>
+    </nav>
+
+    <!-- Mobile Navigation Container -->
+    <div id="mobile-menu" class="mobile-nav-container">
+      <ul class="mobile-menu">
+        <!-- HOME Item with separate link and arrow button for distinct functionality -->
+        <li class="mobile-nav-item has-dropdown">
+          <div class="mobile-item-header">
+            <!-- Link element for navigation -->
+            <a href="#" class="mobile-nav-link">HOME</a>
+            <!-- Button element for toggling the dropdown -->
+            <button
+              class="mobile-dropdown-arrow"
+              aria-haspopup="true"
+              aria-expanded="false"
+              aria-controls="home-dropdown"
+              aria-label="Toggle Home dropdown"
+            >
+              <span class="arrow-icon"></span>
+            </button>
+          </div>
+          <ul class="mobile-dropdown" role="menu" id="home-dropdown">
+            <li><a href="#" role="menuitem">HOME 1 (Subpage)</a></li>
+            <li><a href="#" role="menuitem">HOME 2 (Alt Layout)</a></li>
+          </ul>
+        </li>
+
+        <!-- Standard Mobile Menu Items -->
+        <li class="mobile-nav-item">
+          <div class="mobile-item-header">
+            <a href="#" class="mobile-nav-link">PRODUCTS</a>
+          </div>
+        </li>
+        <li class="mobile-nav-item">
+          <div class="mobile-item-header">
+            <a href="#" class="mobile-nav-link">ABOUT</a>
+          </div>
+        </li>
+        <li class="mobile-nav-item">
+          <div class="mobile-item-header">
+            <a href="#" class="mobile-nav-link">FAQ</a>
+          </div>
+        </li>
+        <li class="mobile-nav-item">
+          <div class="mobile-item-header">
+            <a href="#" class="mobile-nav-link">CAREERS</a>
+          </div>
+        </li>
+        <li class="mobile-nav-item">
+          <div class="mobile-item-header">
+            <a href="#" class="mobile-nav-link">BLOG</a>
+          </div>
+        </li>
+        <li class="mobile-nav-item">
+          <div class="mobile-item-header">
+            <a href="#" class="mobile-nav-link">CONTACT</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const nav = document.querySelector(".navbar");
+        const dropdownTriggers = nav.querySelectorAll(".dropdown-trigger");
+        const hamburger = document.querySelector(".hamburger-menu");
+        const mobileMenu = document.getElementById("mobile-menu");
+
+        // New selector for the separate arrow button
+        const mobileDropdownArrows = mobileMenu.querySelectorAll(
+          ".mobile-dropdown-arrow"
+        );
+
+        // --- Desktop Dropdown Handlers ---
+
+        dropdownTriggers.forEach((trigger) => {
+          const navItem = trigger.closest(".nav-item");
+          let timeout;
+
+          // Open dropdown on mouse enter
+          navItem.addEventListener("mouseenter", () => {
+            clearTimeout(timeout);
+            navItem.classList.add("dropdown-open");
+            trigger.setAttribute("aria-expanded", "true");
+          });
+
+          // Close dropdown on mouse leave (with slight delay)
+          navItem.addEventListener("mouseleave", () => {
+            timeout = setTimeout(() => {
+              navItem.classList.remove("dropdown-open");
+              trigger.setAttribute("aria-expanded", "false");
+            }, 200); // 200ms delay for a better feel
+          });
+        });
+
+        // --- Mobile Menu Handlers ---
+
+        function toggleMobileMenu() {
+          const isActive = mobileMenu.classList.toggle("is-active");
+          hamburger.classList.toggle("is-active");
+          hamburger.setAttribute("aria-expanded", isActive);
+          document.body.style.overflow = isActive ? "hidden" : ""; // Prevent body scrolling
+        }
+
+        hamburger.addEventListener("click", toggleMobileMenu);
+
+        // --- Mobile Dropdown Handlers (for the new separate arrow button) ---
+
+        mobileDropdownArrows.forEach((arrowBtn) => {
+          const parentItem = arrowBtn.closest(".mobile-nav-item");
+          // Use the aria-controls attribute to find the controlled dropdown <ul>
+          const dropdownId = arrowBtn.getAttribute("aria-controls");
+          const dropdown = document.getElementById(dropdownId);
+
+          if (!dropdown) return; // Guard clause
+
+          arrowBtn.addEventListener("click", (e) => {
+            // This click only targets the dropdown arrow button, ensuring the link is untouched.
+
+            // Toggle the open state on the parent item
+            const isNowOpen = parentItem.classList.toggle("is-open");
+
+            // Apply max-height transition class for slide effect
+            if (isNowOpen) {
+              dropdown.classList.add("is-open");
+              arrowBtn.setAttribute("aria-expanded", "true");
+            } else {
+              dropdown.classList.remove("is-open");
+              arrowBtn.setAttribute("aria-expanded", "false");
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
