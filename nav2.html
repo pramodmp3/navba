@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stackly Animated Navbar</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./nav2.css" />
+  </head>
+  <body>
+    <nav class="navbar" role="navigation" aria-label="Main Navigation">
+      <!-- Logo --><a href="#" class="logo-link" aria-label="Stackly Home">
+        <!-- Placeholder for user-provided image (Color updated) --><img
+          src="./files/logo.webp"
+          alt="Stackly Company Logo"
+          class="logo"
+        />
+      </a>
+
+      <!-- Desktop Navigation -->
+      <div class="desktop-nav">
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <!-- Dropdown Parent --><a
+              href="./home2.html"
+              class="nav-link dropdown-trigger"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              HOME
+              <span class="dropdown-toggle-icon">&#9660;</span>
+            </a>
+            <ul class="dropdown" role="menu">
+              <li>
+                <a href="./index.html" role="menuitem">HOME 1 (Subpage)</a>
+              </li>
+              <!-- <li><a href="#" role="menuitem">HOME 2 (Alt Layout)</a></li> -->
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="./product.html" class="nav-link">PRODUCTS</a>
+          </li>
+          <li class="nav-item">
+            <a href="./about2.html" class="nav-link">ABOUT</a>
+          </li>
+          <li class="nav-item">
+            <a href="./faq.html" class="nav-link">FAQ</a>
+          </li>
+          <li class="nav-item">
+            <a href="./career.html" class="nav-link">CAREERS</a>
+          </li>
+          <li class="nav-item">
+            <a href="./blog2.html" class="nav-link">BLOG</a>
+          </li>
+        </ul>
+
+        <!-- Unique Contact Button (Desktop) --><a href="./contact2.html">
+          <button class="contact-btn" aria-label="Contact Stackly for services">
+            CONTACT
+          </button>
+        </a>
+      </div>
+
+      <!-- Mobile Hamburger Menu --><button
+        class="hamburger-menu"
+        aria-label="Toggle navigation menu"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+      >
+        <span class="bar bar-top"></span>
+        <span class="bar bar-mid"></span>
+        <span class="bar bar-bottom"></span>
+      </button>
+    </nav>
+
+    <!-- Mobile Navigation Container -->
+    <div id="mobile-menu" class="mobile-nav-container">
+      <ul class="mobile-menu">
+        <!-- HOME Item with separate link and arrow button for distinct functionality -->
+        <li class="mobile-nav-item has-dropdown">
+          <div class="mobile-item-header">
+            <!-- Link element for navigation --><a
+              href="./home2.html"
+              class="mobile-nav-link"
+              >HOME</a
+            >
+            <!-- Button element for toggling the dropdown --><button
+              class="mobile-dropdown-arrow"
+              aria-haspopup="true"
+              aria-expanded="false"
+              aria-controls="home-dropdown"
+              aria-label="Toggle Home dropdown"
+            >
+              <span class="arrow-icon"></span>
+            </button>
+          </div>
+          <ul class="mobile-dropdown" role="menu" id="home-dropdown">
+            <li><a href="./index.html" role="menuitem">HOME 1 (Subpage)</a></li>
+            <!-- <li><a href="#" role="menuitem">HOME 2 (Alt Layout)</a></li> -->
+          </ul>
+        </li>
+
+        <!-- Standard Mobile Menu Items -->
+        <li class="mobile-nav-item">
+          <div class="mobile-item-header">
+            <a href="./product.html" class="mobile-nav-link">PRODUCTS</a>
+          </div>
+        </li>
+        <li class="mobile-nav-item">
+          <div class="mobile-item-header">
+            <a href="./about2.html" class="mobile-nav-link">ABOUT</a>
+          </div>
+        </li>
+        <li class="mobile-nav-item">
+          <div class="mobile-item-header">
+            <a href="./faq.html" class="mobile-nav-link">FAQ</a>
+          </div>
+        </li>
+        <li class="mobile-nav-item">
+          <div class="mobile-item-header">
+            <a href="./career.html" class="mobile-nav-link">CAREERS</a>
+          </div>
+        </li>
+        <li class="mobile-nav-item">
+          <div class="mobile-item-header">
+            <a href="./blog2.html" class="mobile-nav-link">BLOG</a>
+          </div>
+        </li>
+
+        <!-- Unique CONTACT Button (Mobile) -->
+        <li class="mobile-nav-item has-button">
+          <div class="mobile-item-header">
+            <a
+              href="./contact2.html"
+              class="mobile-contact-link"
+              aria-label="Contact Stackly for services"
+              >CONTACT</a
+            >
+          </div>
+        </li>
+      </ul>
+    </div>
+    <script src="./nav2.js"></script>
+  </body>
+</html>

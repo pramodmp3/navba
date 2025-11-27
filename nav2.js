@@ -1,107 +1,71 @@
-// stackly-navbar.js
+document.addEventListener("DOMContentLoaded", () => {
+  const nav = document.querySelector(".navbar");
+  const dropdownTriggers = nav.querySelectorAll(".dropdown-trigger");
+  const hamburger = document.querySelector(".hamburger-menu");
+  const mobileMenu = document.getElementById("mobile-menu");
 
-(() => {
-  const navbar = document.querySelector(".navbar");
-  const hamburger = document.querySelector(".hamburger");
-  const mobileDrawer = document.getElementById("mobile-menu");
-
-  // Desktop dropdown: toggle on click, close on outside click + escape
-  const desktopDropdownButtons = Array.from(
-    document.querySelectorAll(".has-dropdown > .nav-link")
+  // New selector for the separate arrow button
+  const mobileDropdownArrows = mobileMenu.querySelectorAll(
+    ".mobile-dropdown-arrow"
   );
 
-  desktopDropdownButtons.forEach((btn) => {
-    const parent = btn.closest(".has-dropdown");
-    const dropdown = parent.querySelector(".dropdown");
+  // --- Desktop Dropdown Handlers ---
 
-    btn.addEventListener("click", (e) => {
-      e.preventDefault();
-      const isOpen = parent.classList.contains("open");
-      // Close others
-      document
-        .querySelectorAll(".has-dropdown.open")
-        .forEach((d) => d.classList.remove("open"));
-      // Toggle current
-      if (!isOpen) {
-        parent.classList.add("open");
-        btn.setAttribute("aria-expanded", "true");
+  dropdownTriggers.forEach((trigger) => {
+    const navItem = trigger.closest(".nav-item");
+    let timeout;
+
+    // Open dropdown on mouse enter
+    navItem.addEventListener("mouseenter", () => {
+      clearTimeout(timeout);
+      navItem.classList.add("dropdown-open");
+      trigger.setAttribute("aria-expanded", "true");
+    });
+
+    // Close dropdown on mouse leave (with slight delay)
+    navItem.addEventListener("mouseleave", () => {
+      timeout = setTimeout(() => {
+        navItem.classList.remove("dropdown-open");
+        trigger.setAttribute("aria-expanded", "false");
+      }, 200); // 200ms delay for a better feel
+    });
+  });
+
+  // --- Mobile Menu Handlers ---
+
+  function toggleMobileMenu() {
+    const isActive = mobileMenu.classList.toggle("is-active");
+    hamburger.classList.toggle("is-active");
+    hamburger.setAttribute("aria-expanded", isActive);
+    document.body.style.overflow = isActive ? "hidden" : ""; // Prevent body scrolling
+  }
+
+  hamburger.addEventListener("click", toggleMobileMenu);
+
+  // --- Mobile Dropdown Handlers (for the new separate arrow button) ---
+
+  mobileDropdownArrows.forEach((arrowBtn) => {
+    const parentItem = arrowBtn.closest(".mobile-nav-item");
+    // Use the aria-controls attribute to find the controlled dropdown <ul>
+    const dropdownId = arrowBtn.getAttribute("aria-controls");
+    const dropdown = document.getElementById(dropdownId);
+
+    if (!dropdown) return; // Guard clause
+
+    arrowBtn.addEventListener("click", (e) => {
+      // This click only targets the dropdown arrow button, ensuring the link is untouched.
+
+      // Toggle the open state on the parent item
+      const isNowOpen = parentItem.classList.toggle("is-open");
+
+      // Apply max-height transition class for slide effect
+      if (isNowOpen) {
+        dropdown.classList.add("is-open");
+        arrowBtn.setAttribute("aria-expanded", "true");
       } else {
-        parent.classList.remove("open");
-        btn.setAttribute("aria-expanded", "false");
-      }
-    });
-
-    // Close on outside click
-    document.addEventListener("click", (e) => {
-      if (!parent.contains(e.target)) {
-        parent.classList.remove("open");
-        btn.setAttribute("aria-expanded", "false");
-      }
-    });
-
-    // Close on escape
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        parent.classList.remove("open");
-        btn.setAttribute("aria-expanded", "false");
+        dropdown.classList.remove("is-open");
+        arrowBtn.setAttribute("aria-expanded", "false");
       }
     });
   });
-
-  // Hamburger opens mobile drawer
-  const toggleMobile = (open) => {
-    hamburger.classList.toggle("active", open);
-    hamburger.setAttribute("aria-expanded", String(open));
-    mobileDrawer.classList.toggle("open", open);
-    document.body.style.overflow = open ? "hidden" : "";
-  };
-
-  hamburger.addEventListener("click", () => {
-    const isOpen = hamburger.classList.contains("active");
-    toggleMobile(!isOpen);
-  });
-
-  // Close mobile drawer on outside click
-  mobileDrawer.addEventListener("click", (e) => {
-    if (e.target === mobileDrawer) toggleMobile(false);
-  });
-
-  // Mobile submenu toggles (arrow opens, text navigates)
-  const mobileSubGroups = Array.from(
-    document.querySelectorAll(".mobile-item.has-dropdown")
-  );
-  mobileSubGroups.forEach((group) => {
-    const arrowBtn = group.querySelector(".mobile-arrow");
-    const sub = group.querySelector(".mobile-sub");
-    arrowBtn.addEventListener("click", () => {
-      const expanded = arrowBtn.getAttribute("aria-expanded") === "true";
-      arrowBtn.setAttribute("aria-expanded", String(!expanded));
-      sub.classList.toggle("open", !expanded);
-    });
-  });
-
-  // Keyboard navigation for accessibility: close drawer on Escape
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && mobileDrawer.classList.contains("open")) {
-      toggleMobile(false);
-      hamburger.focus();
-    }
-  });
-
-  // Prevent focus from escaping modal when open (basic focus trap)
-  mobileDrawer.addEventListener("keydown", (e) => {
-    if (!mobileDrawer.classList.contains("open")) return;
-    const focusable = mobileDrawer.querySelectorAll("a, button");
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    if (e.key === "Tab") {
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    }
-  });
-})();
+});
